@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * </answerTask4>
  */
 public class SudokuSolver implements ISodukoSolver {
-
+    public static int[][] sudoku = new int[9][9];
     public SudokuSolver() {
         //initialize if necessary
     }
@@ -202,7 +202,8 @@ public class SudokuSolver implements ISodukoSolver {
     }
 
     private int[][] solve(int[][] sudoku, boolean[][] fixed, int posX, int posY) {
-
+        //temp++;
+        //System.out.println("Anzahl der Objekte: " + temp);
         Main.printSudoku(sudoku);
         //sudoku[posX][posY] = sudoku[posX][posY]+1;
 
@@ -232,46 +233,46 @@ public class SudokuSolver implements ISodukoSolver {
                 }
                 else {
                     int tempNum = sudoku[posX][posY] + 1;
-                    if(tempNum > 9){
-                        sudoku[posX][posY] = 0;
-                        System.out.println("overdrive");
-                        
-                        while(true){
-                            
-                            if(posY -1  >= 0){
-                                if(fixed[posX][posY] == false){
-                                    sudoku[posX][posY-1] = sudoku[posX][posY-1]+1;
-                                    
-                                    
-                                    if(sudoku[posX][posY-1] > 9){
-                                        sudoku[posX][posY-1] = 0;
-                                        return solve(sudoku, fixed, posX, posY);
-                                        
-                                    }
-                                    
-                                }
-                                
-                                
-                            }  
-                            else{
-                                posY = posY-1;
-                            }
-                            
-                            
-                            
-                            if(checkSudoku(sudoku)){
-                                break;
-                            }
-                            
-                        }
-                        
-                        return solve(sudoku, fixed, posX, posY-1);
-                        
-                    }
-                    else{
+//                    if(tempNum > 9){
+//                        sudoku[posX][posY] = 0;
+//                        System.out.println("overdrive");
+//                        
+//                        while(true){
+//                            
+//                            if(posY -1  >= 0){
+//                                if(fixed[posX][posY] == false){
+//                                    sudoku[posX][posY-1] = sudoku[posX][posY-1]+1;
+//                                    
+//                                    
+//                                    if(sudoku[posX][posY-1] > 9){
+//                                        sudoku[posX][posY-1] = 0;
+//                                        return solve(sudoku, fixed, posX, posY);
+//                                        
+//                                    }
+//                                    
+//                                }
+//                                
+//                                
+//                            }  
+//                            else{
+//                                posY = posY-1;
+//                            }
+//                            
+//                            
+//                            
+//                            if(checkSudoku(sudoku)){
+//                                break;
+//                            }
+//                            
+//                        }
+//                        
+//                        return solve(sudoku, fixed, posX, posY-1);
+//                        
+//                    }
+//                    else{
                         sudoku[posX][posY] = tempNum;
                         return solve(sudoku, fixed, posX, posY);
-                    }
+//                    }
                     
                     
                 }
@@ -287,35 +288,41 @@ public class SudokuSolver implements ISodukoSolver {
 
         return sudoku;
     }
+    
+    public boolean solve2(){
+        //System.out.println("asdf");
+        for(int i = 0; i < 9; i++){
+            //System.out.println("###");
+            for(int n = 0; n < 9; n++){
+                if(sudoku[i][n] == 0){
+                    for(int input = 1; input <= 9; input++){
+                        sudoku[i][n] = input;
+                        if(checkSudoku(sudoku)){
+                            if( solve2()){
+                                return true;
+                            }
+                            else{
+                                sudoku[i][n] = 0;
+                                
+                            }
+                        }
+                        else{
+                            sudoku[i][n] = 0;
+                        }
+                        
+                    }
+                    return false;
+                }
+            }
+        }
+        //Main.printSudoku(sudoku);
+        return true;
+    }
 
     @Override
     public int[][] solveSudokuParallel(int[][] rawSudoku) {
 
         // implement this method
         return new int[0][0]; // delete this line!
-    }
-
-    // add helper methods here if necessary
-//    private boolean isValid(char[][] board, int row, int col, char c) { //https://www.programcreek.com/2014/05/leetcode-sudoku-solver-java/
-//        for (int i = 0; i < 9; i++) {
-//            if (board[i][col] != '0' && board[i][col] == c) {
-//                return false;
-//            }
-//
-//            if (board[row][i] != '0' && board[row][i] == c) {
-//                return false;
-//            }
-//
-//            if (board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] != '0'
-//                    &&
-//                    board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] == c) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-    private boolean isValid(int[][] rawSudoku, int row, int col) {
-
-        return true;
     }
 }
