@@ -14,13 +14,13 @@ public class Main {
         
         ss.sudoku = input;
         ss.solve2();
-        //int[][] output = ss.solve2(input);
+        int[][] output = ss.solveSudoku(input);
         System.out.println(">--- SOLUTION ---");
-        printSudoku(ss.sudoku);
+        printSudoku(output);
         
         
         System.out.println(">----------------");
-        System.out.println("SOLVED    = " + ss.checkSudoku(ss.sudoku));
+        System.out.println("SOLVED    = " + ss.checkSudoku(output));
         System.out.println(">----------------");
     }
     

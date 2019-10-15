@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,6 +62,41 @@ public class SudokuSolver implements ISodukoSolver {
 
     @Override
     public boolean checkSudoku(int[][] rawSudoku) {
+        
+        
+//        ExecutorService executor = Executors.newFixedThreadPool(3);
+//        Callable<Boolean> rowChecker = new Callable<Boolean>() {
+//            @Override
+//            public Boolean call() throws Exception {
+//                // row checker
+//                for (int row = 0; row < 9; row++) {
+//                    for (int col = 0; col < 8; col++) {
+//                        for (int col2 = col + 1; col2 < 9; col2++) {
+//                            if (rawSudoku[row][col] != 0) {
+//                                if (rawSudoku[row][col] == rawSudoku[row][col2]) {
+//                                    return false;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                return true;
+//            }
+//            
+//        };
+//        //System.out.println("asdf");
+//        Future<Boolean> rowChecker_ = executor.submit(rowChecker);
+//        executor.shutdown();
+
+        
+        
+        
+
+        
+        
+        
+        
+        
         // row checker
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 8; col++) {
@@ -90,8 +125,7 @@ public class SudokuSolver implements ISodukoSolver {
 
         // grid checker
         for (int row = 0; row < 9; row += 3) {
-            for (int col = 0; col < 9; col += 3) // row, col is start of the 3 by 3 grid
-            {
+            for (int col = 0; col < 9; col += 3){ // row, col is start of the 3 by 3 grid
                 for (int pos = 0; pos < 8; pos++) {
                     for (int pos2 = pos + 1; pos2 < 9; pos2++) {
                         if (rawSudoku[row + pos % 3][col + pos / 3] != 0) {
@@ -105,189 +139,17 @@ public class SudokuSolver implements ISodukoSolver {
         }
 
         return true;
-//        boolean isCorrect = true;
-//        // implement this method
-//        
-//        List<Worker_solve> workers = new ArrayList<>();
-//        
-//        ExecutorService executer = Executors.newFixedThreadPool(9);
-//        for(int i = 0; i < 9; i++){
-//            Worker_solve worker = new Worker_solve(rawSudoku[i]);
-//            workers.add(worker);
-//            executer.execute(worker);
-//                    
-//        }
-//        executer.shutdown();
-//        
-//        try {
-//            executer.awaitTermination(10, TimeUnit.SECONDS);
-//        }
-//        catch (InterruptedException ex) {
-//            Logger.getLogger(SudokuSolver.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//        for(Worker_solve w : workers){
-//            if(!w.isCorrect){
-//                isCorrect = false;
-//            }
-//        }
-//        if(isCorrect){
-//            
-//            workers = new ArrayList<>();
-//            executer = Executors.newFixedThreadPool(9);
-//            
-//            for(int i = 0; i < 9; i++){
-//                int[] raw = new int[9];
-//                for(int a = 0; a < 9; a++){
-//                    raw[a] = rawSudoku[i][a];
-//                }
-//                
-//                Worker_solve worker = new Worker_solve(raw);
-//                workers.add(worker);
-//                executer.execute(worker);
-//                
-//                
-//            }
-//            executer.shutdown();
-//
-//            try {
-//                executer.awaitTermination(10, TimeUnit.SECONDS);
-//            }
-//            catch (InterruptedException ex) {
-//                Logger.getLogger(SudokuSolver.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//
-//            for(Worker_solve w : workers){
-//                if(!w.isCorrect){
-//                    isCorrect = false;
-//                }
-//            }
-//            
-//            if(isCorrect){
-//                System.out.println("asfasdfasdfasdfasfäöü");
-//             for(int row = 0; row < 9; row += 3)
-//                for(int col = 0; col < 9; col += 3)
-//                   // row, col is start of the 3 by 3 grid
-//                   for(int pos = 0; pos < 8; pos++)
-//                      for(int pos2 = pos + 1; pos2 < 9; pos2++)
-//                         if(rawSudoku[row + pos%3][col + pos/3]==rawSudoku[row + pos2%3][col + pos2/3])
-//                            return false;
-//                
-//                
-//                //return true;
-//            }
-//            
-//            
-//            
-//        }
-//        
-//        
-//        
-//        return false; // delete this line!
+
     }
 
     @Override
     public int[][] solveSudoku(int[][] rawSudoku) {
-        boolean[][] fixedNums = new boolean[9][9];
-
-        for (int i = 0; i < 9; i++) {
-            for (int a = 0; a < 9; a++) {
-                if (rawSudoku[i][a] != 0) {
-                    fixedNums[i][a] = true;
-                }
-            }
-        }
-
-        return solve(rawSudoku, fixedNums, 0, 0);
-    }
-
-    private int[][] solve(int[][] sudoku, boolean[][] fixed, int posX, int posY) {
-        //temp++;
-        //System.out.println("Anzahl der Objekte: " + temp);
-        Main.printSudoku(sudoku);
-        //sudoku[posX][posY] = sudoku[posX][posY]+1;
-
-        if (checkSudoku(sudoku)) {
-            if (fixed[posX][posY] == false) {
-                if (sudoku[posX][posY] == 0) {
-                    sudoku[posX][posY] = 1;
-                    return solve(sudoku, fixed, posX, posY);
-                }
-            }
-            if (posY + 1 > 8) {
-                if(posX+1 < 9){
-                    return solve(sudoku, fixed, posX + 1, 0);
-                }
-                
-            }
-            else {
-                return solve(sudoku, fixed, posX, posY + 1);
-            }
-        }
-        else {
-            //System.out.println("dobini");
-            if (fixed[posX][posY] == false) {
-                if (sudoku[posX][posY] == 0) {
-                    sudoku[posX][posY] = 1;
-                    return solve(sudoku, fixed, posX, posY);
-                }
-                else {
-                    int tempNum = sudoku[posX][posY] + 1;
-//                    if(tempNum > 9){
-//                        sudoku[posX][posY] = 0;
-//                        System.out.println("overdrive");
-//                        
-//                        while(true){
-//                            
-//                            if(posY -1  >= 0){
-//                                if(fixed[posX][posY] == false){
-//                                    sudoku[posX][posY-1] = sudoku[posX][posY-1]+1;
-//                                    
-//                                    
-//                                    if(sudoku[posX][posY-1] > 9){
-//                                        sudoku[posX][posY-1] = 0;
-//                                        return solve(sudoku, fixed, posX, posY);
-//                                        
-//                                    }
-//                                    
-//                                }
-//                                
-//                                
-//                            }  
-//                            else{
-//                                posY = posY-1;
-//                            }
-//                            
-//                            
-//                            
-//                            if(checkSudoku(sudoku)){
-//                                break;
-//                            }
-//                            
-//                        }
-//                        
-//                        return solve(sudoku, fixed, posX, posY-1);
-//                        
-//                    }
-//                    else{
-                        sudoku[posX][posY] = tempNum;
-                        return solve(sudoku, fixed, posX, posY);
-//                    }
-                    
-                    
-                }
-            }
-//            if(posY+1 > 8){
-//            return solve(sudoku, fixed, posX+1, 0);
-//        }
-//        else{
-//            return solve(sudoku, fixed, posX, posY+1);
-//        }
-
-        }
-
+        sudoku = rawSudoku;
+        solve2();
         return sudoku;
     }
+
+
     
     public boolean solve2(){
         //System.out.println("asdf");
